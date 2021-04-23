@@ -22,7 +22,7 @@ javac Screenshare/src/*.java
 
 3. Run server
 
-Server takes in one argument for the max number of clients to be conencted
+Server takes in one argument for the max number of clients to be connected
 ```
 java Screenshare/Server.java 3
 ```
