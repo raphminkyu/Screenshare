@@ -64,13 +64,14 @@ public class Client {
     	 JPanel header = new JPanel();
     	 
     	 JButton button = null;
+
 		try {
 			button = makeButton();
 		} catch (AWTException e) {
 			e.printStackTrace();
 		}
 		
-    	 header.add(button);
+		header.add(button);
 
     	 frame.add(header);
     	 frame.pack();
@@ -88,7 +89,7 @@ public class Client {
     public static JButton makeButton() throws AWTException {
     	 Robot robot = new Robot();
     	 
-    	JButton button = new JButton("client");
+    	JButton button = new JButton("push screenshot");
     	button.addActionListener(new ActionListener() {
 
             @Override
@@ -99,9 +100,9 @@ public class Client {
                     Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
                     BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
                     System.out.println("screenshot taken");
-
                     ImageIO.write(screenFullImage, "jpg", outputStream);
                     System.out.println("screenshot done");
+                    screenFullImage.flush();
 
                     Thread.sleep(0);
                     

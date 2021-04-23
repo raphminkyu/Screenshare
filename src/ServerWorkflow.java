@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -26,13 +27,15 @@ public class ServerWorkflow extends Thread {
     Socket socket;
     Map<Integer, JPanel> panels;
     int counter; //order of client connected
+    HashMap<Integer, Boolean> firstTime; //check if a screenshot has been take
 
     public ServerWorkflow(Socket socket, int counter, Map<Integer, JPanel> panels) {
     	
        this.socket = socket;
        this.panels=panels;
        this.counter= counter;
-
+       firstTime = new HashMap<>();
+       firstTime.put(counter, false);
     }
     
     public Socket getSocket() {
@@ -66,6 +69,7 @@ public class ServerWorkflow extends Thread {
     	System.out.println(image);
     
     	changeBackground(image);
+    	image.flush();
     
     }
     
@@ -77,21 +81,34 @@ public class ServerWorkflow extends Thread {
     private void changeBackground(BufferedImage img) {
 
     	JPanel panel = panels.get(counter);
-    	
-        ImageIcon icon = new ImageIcon(img);
-        //resized height, width set temporaily for test purpose
-    	panel.add(new JLabel(resizeImageIcon(icon, 100,100)));
+
+        //resized height, width set temporarily for test purpose
+        JLabel label = null;
+    	if (!firstTime.get(counter)) {
+            ImageIcon icon = new ImageIcon(img);
+    	    label = new JLabel(resizeImageIcon(icon, 600, 400));
+            panel.add(label);
+            firstTime.replace(counter, true);
+        } else {
+    	    panel.remove(label);
+            ImageIcon icon = new ImageIcon(img);
+            label = new JLabel(resizeImageIcon(icon, 600, 400));
+    	    panel.add(label);
+        }
+
+
+
     	panel.repaint();
     }
     
     /**
      * Helper method to resize Image into an icon
      * 
-     * @returns resized icon
+     * @return resized icon
      */
     private ImageIcon resizeImageIcon(ImageIcon icon,int x, int y) {
     	Image image = icon.getImage(); // transform it 
-    	Image newimg = image.getScaledInstance(x, y,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+    	Image newimg = image.getScaledInstance(x, y,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
     	ImageIcon icon_2 = new ImageIcon(newimg);  // transform it back
     	return icon_2;
     }
