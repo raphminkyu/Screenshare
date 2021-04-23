@@ -89,25 +89,28 @@ public class Client {
     public static JButton makeButton() throws AWTException {
     	 Robot robot = new Robot();
     	 
-    	JButton button = new JButton("push screenshot");
+    	JButton button = new JButton("Screenshare");
     	button.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     
-
-                    Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-                    BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
-                    System.out.println("screenshot taken");
-                    ImageIO.write(screenFullImage, "jpg", outputStream);
-                    System.out.println("screenshot done");
-                    screenFullImage.flush();
-
-                    Thread.sleep(0);
+                	while(true) {
+                		
+	                	
+	                    Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+	                    BufferedImage screenFullImage = robot.createScreenCapture(screenRect);
+	  
+	                    ImageIO.write(screenFullImage, "jpg", outputStream);
+	                    System.out.println("screenshot sent");
+	                    screenFullImage.flush();
+	
+	                    Thread.sleep(1000);
+                	}
                     
 //                    bufferedOutputStream.flush();
-                    System.out.println("screenshot donesssss");
+                   
                 }
                catch (InterruptedException e1) {
 					

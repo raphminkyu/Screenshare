@@ -25,14 +25,14 @@ import javax.swing.plaf.basic.BasicPanelUI;
 public class ServerWorkflow extends Thread {
 
     Socket socket;
-    Map<Integer, JPanel> panels;
+    JPanel panel;
     int counter; //order of client connected
     HashMap<Integer, Boolean> firstTime; //check if a screenshot has been take
 
-    public ServerWorkflow(Socket socket, int counter, Map<Integer, JPanel> panels) {
+    public ServerWorkflow(Socket socket, int counter, JPanel panel) {
     	
        this.socket = socket;
-       this.panels=panels;
+       this.panel=panel;
        this.counter= counter;
        firstTime = new HashMap<>();
        firstTime.put(counter, false);
@@ -51,7 +51,10 @@ public class ServerWorkflow extends Thread {
      */
     public void run() {
     	try {
-			processBackground();
+    		while(true) {
+    			processBackground();
+    		}
+			
 		} catch (IOException e) {
 			
 			e.printStackTrace();
@@ -64,12 +67,15 @@ public class ServerWorkflow extends Thread {
      * @throws IOException
      */
     private void processBackground() throws IOException {
-   
+//   System.out.println("processing background");
         BufferedImage image = ImageIO.read(socket.getInputStream());
-    	System.out.println(image);
-    
-    	changeBackground(image);
-    	image.flush();
+    	
+    	if(image!=null) {
+    		System.out.println(image);
+    		changeBackground(image);
+        	image.flush();
+    	}
+    	
     
     }
     
@@ -80,20 +86,26 @@ public class ServerWorkflow extends Thread {
      */
     private void changeBackground(BufferedImage img) {
 
-    	JPanel panel = panels.get(counter);
+    	
 
         //resized height, width set temporarily for test purpose
         JLabel label = null;
+        ImageIcon icon = new ImageIcon(img);
+        
+    	GridBagConstraints c = new GridBagConstraints();
+      	c.fill = GridBagConstraints.VERTICAL;
+      	c.gridy=1;
+    	
     	if (!firstTime.get(counter)) {
-            ImageIcon icon = new ImageIcon(img);
-    	    label = new JLabel(resizeImageIcon(icon, 600, 400));
-            panel.add(label);
+
+    		label = new JLabel(resizeImageIcon(icon, panel.getWidth()*0.6,  panel.getHeight()*0.6));
+            panel.add(label,c);   
             firstTime.replace(counter, true);
         } else {
-    	    panel.remove(label);
-            ImageIcon icon = new ImageIcon(img);
-            label = new JLabel(resizeImageIcon(icon, 600, 400));
-    	    panel.add(label);
+//    	    panel.remove(label);
+    	    
+            label = new JLabel(resizeImageIcon(icon, panel.getWidth()*0.6,  panel.getHeight()*0.6));
+    	    panel.add(label,c);
         }
 
 
@@ -106,9 +118,9 @@ public class ServerWorkflow extends Thread {
      * 
      * @return resized icon
      */
-    private ImageIcon resizeImageIcon(ImageIcon icon,int x, int y) {
+    private ImageIcon resizeImageIcon(ImageIcon icon,double d, double e) {
     	Image image = icon.getImage(); // transform it 
-    	Image newimg = image.getScaledInstance(x, y,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+    	Image newimg = image.getScaledInstance((int) d, (int) e,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
     	ImageIcon icon_2 = new ImageIcon(newimg);  // transform it back
     	return icon_2;
     }
