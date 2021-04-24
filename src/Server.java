@@ -32,8 +32,7 @@ public class Server {
 	  * @throws NoSuchAlgorithmException
 	  */
     public static void main(String[] args) throws IOException, NoSuchAlgorithmException {
-//    	numClients=Integer.parseInt(args[0]);
-        numClients = 2;
+    	numClients=Integer.parseInt(args[0]);
     	panels = new HashMap<Integer, JPanel>();
     	server = new ServerSocket(3000);
     	Socket socket= null;
