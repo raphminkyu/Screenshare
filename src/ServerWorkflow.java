@@ -102,8 +102,10 @@ public class ServerWorkflow extends Thread {
             panel.add(label,c);   
             firstTime.replace(counter, true);
         } else {
-//    	    panel.remove(label);
-    	    
+    	    panel.removeAll();
+            JTextArea text = new JTextArea(String.valueOf(counter) + "th client");
+
+            panel.add(text, c);
             label = new JLabel(resizeImageIcon(icon, panel.getWidth()*0.6,  panel.getHeight()*0.6));
     	    panel.add(label,c);
         }
