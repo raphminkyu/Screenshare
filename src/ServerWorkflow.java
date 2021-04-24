@@ -110,7 +110,7 @@ public class ServerWorkflow extends Thread {
 
 
 
-    	panel.repaint();
+    	panel.updateUI();
     }
     
     /**
